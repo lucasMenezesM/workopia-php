@@ -1,5 +1,11 @@
 .env
 
+/vendor
+/node_modules
+/config/db.php
+.vscode
+.DS_Store
+
 ##### Windows
 # Windows thumbnail cache files
 Thumbs.db
