@@ -1,21 +1,16 @@
 <?php
 
 require "../helpers.php";
-// require "../views/home.view.php";
-// require basePath("views/home.view.php");
+require basePath("Router.php");
 
-$routes = [
-    "/" => "controllers/home.php",
-    "/listings" => "controllers/listings/index.php",
-    "/listings/create" => "controllers/listings/create.php",
-    "404" => "controllers/error/404.php"
-];
+$router = new Router();
+
+require basePath("routes.php");
 
 $uri = $_SERVER["REQUEST_URI"];
+$method = $_SERVER["REQUEST_METHOD"];
 
-if (array_key_exists($uri, $routes)) {
-    require basePath($routes[$uri]);
-} else {
-    require basePath($routes["404"]);
-}
-// loadView("home");
+$router->route($uri, $method);
+
+inspect($uri);
+inspect($method);
