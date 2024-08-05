@@ -1,3 +1,9 @@
 <?php
 
-loadView("home");
+$config = require basePath("config/db.php");
+$db = new DataBase($config);
+
+$listings = $db->query("SELECT * FROM listings LIMIT 6")->fetchAll();
+// inspect($listings);
+
+loadView("home", ["listings" => $listings]);
