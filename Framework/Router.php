@@ -2,6 +2,8 @@
 
 namespace Framework;
 
+use ErrorController;
+
 class Router
 {
     protected $routes = [];
@@ -11,15 +13,18 @@ class Router
      *
      * @param string $method
      * @param string $uri
-     * @param string $controller
+     * @param string $action
      * @return void
      */
-    function registerRoute(string $method, string $uri, string $controller): void
+    function registerRoute(string $method, string $uri, string $action): void
     {
+        list($controller, $controllerMethod) = explode("@", $action);
+
         $this->routes[] = [
             "method" => $method,
             "uri" => $uri,
             "controller" => $controller,
+            "controllerMethod" => $controllerMethod
         ];
     }
 
@@ -72,19 +77,6 @@ class Router
     }
 
     /**
-     * Load Error Page
-     *
-     * @param integer $httpCode
-     * @return void
-     */
-    public function error(int $httpCode = 404)
-    {
-        http_response_code($httpCode);
-        loadView("error/$httpCode");
-        exit;
-    }
-
-    /**
      * Route the request
      * 
      * @param string $uri
@@ -96,10 +88,24 @@ class Router
     {
         foreach ($this->routes as $route) {
             if ($route["method"] === $method && $route["uri"] === $uri) {
-                require basePath("App/" . $route["controller"]);
+                // Extract controller and controller method
+
+                // Using namespaces:
+                // $controller = "App\\Controllers\\" . $route["controller"];
+
+                // Not using namespaces:
+                require basePath("App/controllers/" . $route["controller"] . ".php");
+                $controller = new $route['controller']();
+
+                $controllerMethod = $route["controllerMethod"];
+
+                // Instatiate the controller and call the method
+                $controllerInstance = new $controller();
+                $controllerInstance->$controllerMethod();
                 return;
             }
         }
-        $this->error(404);
+        require basePath("App/controllers/ErrorController.php");
+        ErrorController::notFound();
     }
 }

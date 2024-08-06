@@ -27,5 +27,5 @@ $method = $_SERVER["REQUEST_METHOD"];
 // Route the request and calling the controller
 $router->route($uri, $method);
 
-inspect($uri);
-inspect($method);
+// inspect($uri);
+// inspect($method);
