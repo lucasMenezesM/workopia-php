@@ -1,0 +1,16 @@
+{
+  "name": "lucasmenezesm/workopia-php",
+  "description": "Job Listing Application",
+  "authors": [
+    {
+      "name": "Lucas Menezes",
+      "email": "livedolux@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Framework\\": "Framework/",
+      "App\\": "App/"
+    }
+  }
+}
