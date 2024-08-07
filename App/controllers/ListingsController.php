@@ -59,4 +59,41 @@ class ListingsController
             "listing" => $data
         ]);
     }
+
+    /**
+     * Store the listing into the database.
+     *
+     * @return void
+     */
+    public function store(): void
+    {
+        $allowedFields = ["title", "description", "salary", "tags", "company", "address", "city", "state", "phone", "email", "requirements", "benefits"];
+
+        $newListingData = array_intersect_key($_POST, array_flip($allowedFields));
+        $newListingData["id"] = 1;
+
+        // calling the sinitize function to sinitize each item in newListingData
+        $newListingData = array_map("sanitize", $newListingData);
+
+        $requiredFields = ["title", "description", "email", "city", "state"];
+
+        $erros = [];
+
+        foreach ($requiredFields as $field) {
+            if (empty($newListingData[$field]) || !Validation::string($newListingData[$field])) {
+                $erros[] = ["message" => "The field $field should not be empty"];
+            }
+        }
+
+        if (!empty($erros)) {
+            inspect($erros);
+            // realod the same view with errros
+            loadView("/listings/create", [
+                "erros" => $erros,
+                "listingData" => $newListingData
+            ]);
+        } else {
+            echo "success";
+        }
+    }
 }
