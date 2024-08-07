@@ -5,6 +5,8 @@
 
 use Framework\Database;
 
+require basePath("App/controllers/ErrorController.php");
+
 class ListingsController
 {
     protected $db;
@@ -38,14 +40,19 @@ class ListingsController
 
     /**
      * Loads the details of a specific job listing
-     *
+     * @param array $params
      * @return void
      */
-    public function show(): void
+    public function show(array $params): void
     {
-        $requestedId = $_GET["id"] ?? '';
+        $requestedId = $params["id"] ?? '';
         $params = ["id" => $requestedId];
         $data = $this->db->query("SELECT * FROM listings WHERE id = :id", $params)->fetch();
+
+        if (!$data) {
+            ErrorController::notFound("Listing not found");
+            return;
+        }
 
         loadView("listings/show", [
             "listing" => $data

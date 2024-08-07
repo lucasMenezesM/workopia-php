@@ -22,10 +22,9 @@ require basePath("routes.php");
 
 // Get current uri and Method used by user at the moment
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-$method = $_SERVER["REQUEST_METHOD"];
 
 // Route the request and calling the controller
-$router->route($uri, $method);
+$router->route($uri);
 
 // inspect($uri);
 // inspect($method);

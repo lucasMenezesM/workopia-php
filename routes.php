@@ -17,4 +17,4 @@
 $router->get("/", "HomeController@index");
 $router->get("/listings", "ListingsController@index");
 $router->get("/listings/create", "ListingsController@getCreate");
-$router->get("/listing", "ListingsController@show");
+$router->get("/listing/{id}", "ListingsController@show");

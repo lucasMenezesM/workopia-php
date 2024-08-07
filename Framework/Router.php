@@ -84,25 +84,54 @@ class Router
      * @return void
      */
 
-    function route($uri, $method)
+    function route($uri): void
     {
+        $requestedMethod = $_SERVER["REQUEST_METHOD"];
+
         foreach ($this->routes as $route) {
-            if ($route["method"] === $method && $route["uri"] === $uri) {
-                // Extract controller and controller method
 
-                // Using namespaces:
-                // $controller = "App\\Controllers\\" . $route["controller"];
+            // uri requested by user
+            $uriSegments = explode("/", trim($uri, '/'));
 
-                // Not using namespaces:
-                require basePath("App/controllers/" . $route["controller"] . ".php");
-                $controller = new $route['controller']();
+            // Uri for each iteration
+            $routeSegments = explode("/", trim($route["uri"], "/"));
 
-                $controllerMethod = $route["controllerMethod"];
+            $match = true;
 
-                // Instatiate the controller and call the method
-                $controllerInstance = new $controller();
-                $controllerInstance->$controllerMethod();
-                return;
+            if (count($uriSegments) === count($routeSegments) && $route["method"] === $requestedMethod) {
+                $params = [];
+                $match = true;
+
+                for ($i = 0; $i < count($uriSegments); $i++) {
+                    // if the uri's don't match and there is no param
+                    if ($routeSegments[$i] !== $uriSegments[$i] && !preg_match("/\{(.+?)\}/", $routeSegments[$i])) {
+                        $match = false;
+                        break;
+                    }
+
+                    // Check for the param and add to params array
+                    if (preg_match("/\{(.+?)\}/", $routeSegments[$i], $matches)) {
+                        $params[$matches[$i]] = $uriSegments[$i];
+                    }
+                };
+
+                if ($match) {
+                    // Extract controller and controller method
+
+                    // Using namespaces:
+                    // $controller = "App\\Controllers\\" . $route["controller"];
+
+                    // Not using namespaces:
+                    require basePath("App/controllers/" . $route["controller"] . ".php");
+                    $controller = new $route['controller']();
+
+                    $controllerMethod = $route["controllerMethod"];
+
+                    // Instatiate the controller and call the method
+                    $controllerInstance = new $controller();
+                    $controllerInstance->$controllerMethod($params);
+                    return;
+                }
             }
         }
         require basePath("App/controllers/ErrorController.php");
