@@ -70,9 +70,9 @@ class ListingsController
         $allowedFields = ["title", "description", "salary", "tags", "company", "address", "city", "state", "phone", "email", "requirements", "benefits"];
 
         $newListingData = array_intersect_key($_POST, array_flip($allowedFields));
-        $newListingData["id"] = 1;
+        $newListingData["user_id"] = 1;
 
-        // calling the sinitize function to sinitize each item in newListingData
+        // calling the sanitize function to sanitize each item in newListingData
         $newListingData = array_map("sanitize", $newListingData);
 
         $requiredFields = ["title", "description", "email", "city", "state"];
@@ -93,7 +93,30 @@ class ListingsController
                 "listingData" => $newListingData
             ]);
         } else {
-            echo "success";
+
+            // Turning all the form fields into a string
+            $fields = [];
+
+            foreach ($newListingData as $field => $value) {
+                $fields[] = $field;
+            }
+
+            $fields = implode(", ", $fields);
+
+            // Turning all the form values into a string
+            $values = [];
+
+            foreach ($newListingData as $field => $value) {
+                if (empty($value)) {
+                    $newListingData[$field];
+                }
+                $values[] = ":" . $field;
+            }
+
+            $values = implode(", ", $values);
+            $this->db->query("INSERT INTO listings($fields) VALUES($values)", $newListingData);
+
+            redirect("/listings");
         }
     }
 }

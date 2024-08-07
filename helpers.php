@@ -98,3 +98,15 @@ function sanitize(string $dirty): string
 {
     return filter_var(trim($dirty), FILTER_SANITIZE_SPECIAL_CHARS);
 }
+
+/**
+ * Redirect user to another route
+ *
+ * @param string $uri
+ * @return void
+ */
+function redirect(string $url): void
+{
+    header("Location: $url");
+    exit;
+}

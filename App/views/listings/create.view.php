@@ -42,6 +42,9 @@
             <div class="mb-4">
                 <input type="text" name="benefits" placeholder="Benefits" class="w-full px-4 py-2 border rounded focus:outline-none" value="<?= $listingData["benefits"] ?? '' ?>" />
             </div>
+            <div class="mb-4">
+                <input type="text" name="tags" placeholder="Tags" class="w-full px-4 py-2 border rounded focus:outline-none" value="<?= $listingData["tags"] ?? '' ?>" />
+            </div>
             <h2 class="text-2xl font-bold mb-6 text-center text-gray-500">
                 Company Info & Location
             </h2>
