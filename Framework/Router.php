@@ -88,6 +88,12 @@ class Router
     {
         $requestedMethod = $_SERVER["REQUEST_METHOD"];
 
+        // Check for _method input
+        if ($requestedMethod === "POST" && isset($_POST["_method"])) {
+            // Override the requestedMethod with the value of _method
+            $requestedMethod = strtoupper($_POST["_method"]);
+        }
+
         foreach ($this->routes as $route) {
 
             // uri requested by user

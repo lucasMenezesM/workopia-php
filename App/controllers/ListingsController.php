@@ -119,4 +119,35 @@ class ListingsController
             redirect("/listings");
         }
     }
+
+    /**
+     * Delete a listing
+     *
+     * @param array $params
+     * @return void
+     */
+    public function destroy(array $params): void
+    {
+        $id = $params["id"];
+
+        $params = [
+            "id" => $id
+        ];
+
+        // Check if the listing exist
+        $listing = $this->db->query("SELECT * FROM listings WHERE id = :id", $params)->fetch();
+
+        if (!$listing) {
+            ErrorController::notFound("Listing not found. Could not delete");
+            exit;
+        }
+
+        $this->db->query("DELETE FROM listings WHERE id = :id", $params);
+
+        // Set flash message through sessions
+        $_SESSION["success_message"] = "Listing deleted successfully";
+
+
+        redirect("/listings");
+    }
 }
