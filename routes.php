@@ -24,3 +24,7 @@ $router->post("/listings", "ListingsController@store");
 $router->put("/listings/{id}", "ListingsController@update");
 
 $router->delete("/listings/{id}", "ListingsController@destroy");
+
+// USER ROUTES
+$router->get("/auth/register", "UserController@create");
+$router->get("/auth/login", "UserController@login");
