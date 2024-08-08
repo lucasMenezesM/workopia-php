@@ -104,7 +104,7 @@ class Router
 
             $match = true;
 
-            if (count($uriSegments) === count($routeSegments) && $route["method"] === $requestedMethod) {
+            if (count($uriSegments) === count($routeSegments) && strtoupper($route['method'] === $requestedMethod)) {
                 $params = [];
                 $match = true;
 
@@ -116,8 +116,9 @@ class Router
                     }
 
                     // Check for the param and add to params array
-                    if (preg_match("/\{(.+?)\}/", $routeSegments[$i], $matches)) {
-                        $params[$matches[$i]] = $uriSegments[$i];
+                    if (preg_match('/\{(.+?)\}/', $routeSegments[$i], $matches)) {
+                        // $params[$matches[$i]] = $uriSegments[$i];
+                        $params[$matches[1]] = $uriSegments[$i];
                     }
                 };
 
