@@ -30,3 +30,5 @@ $router->get("/auth/register", "UserController@create");
 $router->get("/auth/login", "UserController@login");
 
 $router->post("/auth/register", "UserController@store");
+$router->get("/auth/logout", "UserController@logout");
+$router->post("/auth/login", "UserController@authenticate");

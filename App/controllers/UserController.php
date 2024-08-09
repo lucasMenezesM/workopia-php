@@ -114,6 +114,83 @@ class UserController
 
         $this->db->query("INSERT INTO users(name, email, city, state, password) VALUES(:name, :email, :city, :state, :password)", $params);
 
+        // Get the new user Id
+        $userId = $this->db->conn->lastInsertId();
+
+        // Store the user's information into a session
+        Session::setSession("user", [
+            "id" => $userId,
+            "name" => $name,
+            "email" => $email,
+            "city" => $city,
+            "state" => $state,
+        ]);
+
+        redirect("/");
+    }
+
+    /**
+     * Authenticate a user with email and password
+     *
+     * @return void
+     */
+    public function authenticate(): void
+    {
+        $email = $_POST["email"];
+        $password = $_POST["password"];
+
+        $errors = [];
+
+        // validation
+        if (!Validation::email($email)) {
+            $errors[] = ["message" => "please, Enter a valid email."];
+        }
+
+        if (!Validation::string($password, 6)) {
+            $errors[] = ["message" => "Password must be at least 6 characters"];
+        }
+
+        // check for errors
+        if (!empty($errors)) {
+            loadView("users/login", [
+                "errors" => $errors
+            ]);
+            exit;
+        }
+
+        // check for email
+        $params = [
+            "email" => $email
+        ];
+
+        $user = $this->db->query("SELECT * FROM users WHERE email = :email", $params)->fetch();
+
+        // Check if email was not found or password is incorrect 
+        if (!$user || !password_verify($password, $user["password"])) {
+            $errors[] = ["message" => "Incorrect credentials"];
+            loadView("users/login", [
+                "errors" => $errors
+            ]);
+            exit;
+        }
+
+        // Store the user's information into a session
+        Session::setSession("user", [
+            "id" => $user["id"],
+            "name" => $user["name"],
+            "email" => $user["email"],
+            "city" => $user["city"],
+            "state" => $user["state"],
+        ]);
+
+        redirect("/");
+    }
+
+    public function logout(): void
+    {
+        Session::clearAll();
+        $params = session_get_cookie_params();
+        setcookie('PHPSESSID', "", time() - 86400, $params["path"], $params["domain"]);
         redirect("/");
     }
 }
