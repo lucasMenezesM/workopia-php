@@ -77,19 +77,18 @@ class ListingsController
 
         $requiredFields = ["title", "description", "email", "city", "state"];
 
-        $erros = [];
+        $errors = [];
 
         foreach ($requiredFields as $field) {
             if (empty($newListingData[$field]) || !Validation::string($newListingData[$field])) {
-                $erros[] = ["message" => "The field $field should not be empty"];
+                $errors[] = ["message" => "The field $field should not be empty"];
             }
         }
 
-        if (!empty($erros)) {
-            inspect($erros);
+        if (!empty($errors)) {
             // realod the same view with errros
             loadView("/listings/create", [
-                "erros" => $erros,
+                "errors" => $errors,
                 "listingData" => $newListingData
             ]);
         } else {
