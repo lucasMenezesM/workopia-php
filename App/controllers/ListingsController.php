@@ -7,6 +7,7 @@ use Framework\Database;
 use Framework\Validation;
 
 require basePath("App/controllers/ErrorController.php");
+// require basePath("Framework/Session.php");
 
 class ListingsController
 {
@@ -25,7 +26,7 @@ class ListingsController
      */
     public function index(): void
     {
-        $listings = $this->db->query("SELECT * FROM listings")->fetchAll();
+        $listings = $this->db->query("SELECT * FROM listings ORDER BY created_at DESC")->fetchAll();
         loadView("listings/index", ["listings" => $listings]);
     }
 
@@ -70,7 +71,7 @@ class ListingsController
         $allowedFields = ["title", "description", "salary", "tags", "company", "address", "city", "state", "phone", "email", "requirements", "benefits"];
 
         $newListingData = array_intersect_key($_POST, array_flip($allowedFields));
-        $newListingData["user_id"] = 1;
+        $newListingData["user_id"] = Session::getSession("user")["id"];
 
         // calling the sanitize function to sanitize each item in newListingData
         $newListingData = array_map("sanitize", $newListingData);
@@ -115,6 +116,8 @@ class ListingsController
             $values = implode(", ", $values);
             $this->db->query("INSERT INTO listings($fields) VALUES($values)", $newListingData);
 
+            Session::setFlashMessage("success_message", "Listing Created Successfully");
+
             redirect("/listings");
         }
     }
@@ -144,8 +147,8 @@ class ListingsController
         $this->db->query("DELETE FROM listings WHERE id = :id", $params);
 
         // Set flash message through sessions
-        $_SESSION["success_message"] = "Listing deleted successfully";
-
+        Session::setFlashMessage("success_message", "Listing deleted successfully");
+        // $_SESSION["success_message"] = "Listing deleted successfully";
 
         redirect("/listings");
     }
@@ -226,7 +229,9 @@ class ListingsController
 
             $this->db->query("UPDATE listings SET $updateFields WHERE id = :id", $updatedValues);
 
-            $_SESSION["success_message"] = "Listing updated successfully";
+            // $_SESSION["success_message"] = "Listing updated successfully";
+            Session::setFlashMessage("success_message", "Listing Edited successfully");
+
 
             redirect("/listings/" . $listing["id"]);
         }
