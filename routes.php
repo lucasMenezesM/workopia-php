@@ -16,7 +16,9 @@
 
 $router->get("/", "HomeController@index");
 $router->get("/listings", "ListingsController@index");
+
 $router->get("/listings/create", "ListingsController@getCreate", ["auth"]);
+$router->get("/listings/search", "ListingsController@search");
 $router->get("/listings/edit/{id}", "ListingsController@edit", ["auth"]);
 $router->get("/listings/{id}", "ListingsController@show");
 

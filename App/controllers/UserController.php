@@ -2,7 +2,6 @@
 
 // namespace App\Controllers;
 
-use Framework\DataBase;
 use Framework\Validation;
 
 require basePath("Framework/Database.php");

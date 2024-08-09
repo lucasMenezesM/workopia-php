@@ -2,7 +2,7 @@
 
 // namespace App\Controllers;
 
-use Framework\Database;
+require basePath("Framework/Database.php");
 
 class HomeController
 {

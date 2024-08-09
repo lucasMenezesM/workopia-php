@@ -3,11 +3,11 @@
 // Not using namespaces
 // namespace App\Controllers;
 
-use Framework\Database;
+// use Framework\Database;
 use Framework\Validation;
 
+require basePath("Framework/Database.php");
 require basePath("App/controllers/ErrorController.php");
-// require basePath("Framework/Session.php");
 
 class ListingsController
 {
@@ -238,5 +238,34 @@ class ListingsController
 
 
         inspectAndDie($updatedValues);
+    }
+
+    /**
+     * Search listings by keyword/location
+     *
+     * @return void
+     */
+    public function search(): void
+    {
+        $keywords = isset($_GET["keywords"]) ? trim($_GET["keywords"]) : "";
+        $location = isset($_GET["location"]) ? trim($_GET["location"]) : "";
+
+        $params = [
+            "keywords" => "%$keywords%",
+            "location" => "%$location%"
+        ];
+
+        $query = "SELECT * FROM listings WHERE (title LIKE :keywords OR description LIKE :keywords OR tags LIKE :keywords OR company LIKE :keywords) AND (city LIKE :location OR state LIKE :location)";
+
+        $listings = $this->db->query($query, $params)->fetchAll();
+
+        if (empty($listings)) {
+        }
+
+        loadView("listings/index", [
+            "listings" => $listings,
+            "location" => $location,
+            "keywords" => $keywords,
+        ]);
     }
 }

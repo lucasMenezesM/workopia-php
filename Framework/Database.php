@@ -1,12 +1,5 @@
 <?php
 
-namespace Framework;
-
-use PDO;
-use PDOException;
-use PDOStatement;
-use Exception;
-
 class DataBase
 {
     public $conn;
